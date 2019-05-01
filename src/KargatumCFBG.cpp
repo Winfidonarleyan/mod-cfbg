@@ -1,14 +1,9 @@
 /*
-
+ *  Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan 
 */
 
-#ifdef KARGATUMCORE
-#include "KargatumConfig.h"
-#else
-#include "../Kargatum-lib/LibKargatumConfig.h"
-#endif
-
 #include "KargatumCFBG.h"
+#include "Config.h"
 #include "Log.h"
 #include "ScriptMgr.h"
 #include "GroupMgr.h"
@@ -24,7 +19,7 @@ CFBG* CFBG::instance()
 
 bool CFBG::IsSystemEnable()
 {
-    return CONF_BOOL(conf::CFBG_ENABLE);
+    return sConfigMgr->GetBoolDefault("CFBG.Enable", false);
 }
 
 uint32 CFBG::GetBGTeamAverageItemLevel(Battleground* bg, TeamId team)
@@ -68,7 +63,7 @@ TeamId CFBG::GetLowerTeamIdInBG(Battleground* bg)
     if (Diff)
         return PlCountA < PlCountH ? TEAM_ALLIANCE : TEAM_HORDE;
 
-    if (CONF_BOOL(conf::CFBG_INCLUDE_AVG_ILVL_ENABLE) && !this->IsAvgIlvlTeamsInBgEqual(bg))
+    if (sConfigMgr->GetBoolDefault("CFBG.Include.Avg.Ilvl.Enable", false) && !this->IsAvgIlvlTeamsInBgEqual(bg))
         return this->GetLowerAvgIlvlTeamInBg(bg);
 
     uint8 rnd = urand(0, 1);
@@ -108,9 +103,6 @@ void CFBG::ValidatePlayerForBG(Battleground* bg, Player* player, TeamId teamId)
 
 uint32 CFBG::GetAllPlayersCountInBG(Battleground* bg)
 {
-    //int32 PlCountA = bg->GetPlayersCountByTeam(TEAM_ALLIANCE);
-    //int32 PlCountH = bg->GetPlayersCountByTeam(TEAM_HORDE);
-
     return bg->GetPlayersSize();
 }
 
@@ -483,7 +475,7 @@ bool CFBG::SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDif
         if (!(*itr)->IsInvitedToBGInstanceGUID)
             qPlayers += (*itr)->Players.size();
 
-    ChatHandler(leader->GetSession()).PSendSysMessage("БГ %s (Уровни: %u - %u). Зарегистрировано: %u/%u", bgName, q_min_level, q_max_level, qPlayers, MinPlayers);
+    ChatHandler(leader->GetSession()).PSendSysMessage("CFBG %s (Levels: %u - %u). Registered: %u/%u", bgName, q_min_level, q_max_level, qPlayers, MinPlayers);
 
     return true;
 }
