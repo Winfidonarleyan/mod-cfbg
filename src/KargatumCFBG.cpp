@@ -185,9 +185,17 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     _fakePlayerStore[player] = fakePlayer;
 
     player->setRace(FakeRace);
-    player->setFactionForRace(FakeRace);
+    this->SetFactionForRace(player, FakeRace);
     player->SetDisplayId(FakeMorph);
     player->SetNativeDisplayId(FakeMorph);
+}
+
+void CFBG::SetFactionForRace(Player* player, uint8 Race)
+{
+    player->setTeamId(player->TeamIdForRace(Race));
+
+    ChrRacesEntry const* DBCRace = sChrRacesStore.LookupEntry(Race);
+    player->setFaction(DBCRace ? DBCRace->FactionID : 0);
 }
 
 void CFBG::ClearFakePlayer(Player* player)
@@ -196,7 +204,7 @@ void CFBG::ClearFakePlayer(Player* player)
         return;
 
     player->setRace(_fakePlayerStore[player].RealRace);
-    player->setFactionForRace(_fakePlayerStore[player].RealRace);
+    this->SetFactionForRace(player, _fakePlayerStore[player].RealRace);
     player->SetDisplayId(_fakePlayerStore[player].RealMorph);
     player->SetNativeDisplayId(_fakePlayerStore[player].RealMorph);
 
@@ -225,7 +233,7 @@ void CFBG::DoForgetPlayersInList(Player* player)
         if (Player* _player = ObjectAccessor::FindPlayer(itr.second))
             player->GetSession()->SendNameQueryOpcode(_player->GetGUID());
     }
-        
+     
     _fakeNamePlayersStore.erase(player);
 }
 

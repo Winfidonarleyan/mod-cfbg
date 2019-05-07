@@ -59,6 +59,7 @@ public:
 
     void ValidatePlayerForBG(Battleground* bg, Player* player, TeamId teamId);
     void SetFakeRaceAndMorph(Player* player);
+    void SetFactionForRace(Player* player, uint8 Race);
     void ClearFakePlayer(Player* player);
     void DoForgetPlayersInList(Player* player);
     void FitPlayerInTeam(Player* player, bool action, Battleground* bg);
