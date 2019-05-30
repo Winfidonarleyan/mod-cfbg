@@ -114,6 +114,9 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     if (player->GetTeamId(true) == player->GetBgTeamId())
         return;
 
+    if (this->IsPlayerFake(player))
+        return;
+
     uint8 FakeRace;
     uint32 FakeMorph;
 
@@ -188,6 +191,8 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     this->SetFactionForRace(player, FakeRace);
     player->SetDisplayId(FakeMorph);
     player->SetNativeDisplayId(FakeMorph);
+
+    LOG_STRING("player->SetDisplayId(_fakePlayerStore[player].RealMorph) - %u - %u", _fakePlayerStore[player].RealMorph, player->GetDisplayId());
 }
 
 void CFBG::SetFactionForRace(Player* player, uint8 Race)
@@ -204,9 +209,9 @@ void CFBG::ClearFakePlayer(Player* player)
         return;
 
     player->setRace(_fakePlayerStore[player].RealRace);
-    this->SetFactionForRace(player, _fakePlayerStore[player].RealRace);
     player->SetDisplayId(_fakePlayerStore[player].RealMorph);
     player->SetNativeDisplayId(_fakePlayerStore[player].RealMorph);
+    this->SetFactionForRace(player, _fakePlayerStore[player].RealRace);
 
     _fakePlayerStore.erase(player);
 }

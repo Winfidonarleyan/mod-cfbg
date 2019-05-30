@@ -32,10 +32,7 @@ struct FakePlayer
     TeamId  RealTeamID;
 };
 
-typedef std::unordered_map<Player*, FakePlayer> FakePlayersContainer;
-typedef std::unordered_map<Player*, uint64> FakeNamePlayersContainer;
-typedef std::unordered_map<Player*, bool> ForgetBGPlayersContainer;
-typedef std::unordered_map<Player*, bool> ForgetInListPlayersContainer;
+
 
 class CFBG
 {
@@ -73,6 +70,11 @@ public:
     bool FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id);
 
 private:
+    typedef std::unordered_map<Player*, FakePlayer> FakePlayersContainer;
+    typedef std::unordered_map<Player*, uint64> FakeNamePlayersContainer;
+    typedef std::unordered_map<Player*, bool> ForgetBGPlayersContainer;
+    typedef std::unordered_map<Player*, bool> ForgetInListPlayersContainer;
+
     FakePlayersContainer _fakePlayerStore;
     FakeNamePlayersContainer _fakeNamePlayersStore;
     ForgetBGPlayersContainer _forgetBGPlayersStore;
