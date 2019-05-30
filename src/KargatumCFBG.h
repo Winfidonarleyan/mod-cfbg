@@ -36,7 +36,6 @@ typedef std::unordered_map<Player*, FakePlayer> FakePlayersContainer;
 typedef std::unordered_map<Player*, uint64> FakeNamePlayersContainer;
 typedef std::unordered_map<Player*, bool> ForgetBGPlayersContainer;
 typedef std::unordered_map<Player*, bool> ForgetInListPlayersContainer;
-typedef std::multimap<int32, GroupQueueInfo*> QueuedGroupMap;
 
 class CFBG
 {
@@ -70,16 +69,14 @@ public:
     void UpdateForget(Player* player);
     bool SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDifficultyEntry const* bracketEntry, Player* leader);
 
-    bool CheckCrossFactionMatch(BattlegroundQueue* bgqueue, BattlegroundBracketId bracket_id, Battleground* bg);    
-    bool FillXPlayersToBG(BattlegroundQueue* bgqueue, BattlegroundBracketId bracket_id, Battleground* bg, bool start);
-    int32 PreAddPlayers(BattlegroundQueue* bgqueue, QueuedGroupMap m_PreGroupMap, int32 MaxAdd, uint32 MaxInTeam);    
+    bool FillPlayersToCFBGWithSpecific(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId);
+    bool FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id);
 
 private:
     FakePlayersContainer _fakePlayerStore;
     FakeNamePlayersContainer _fakeNamePlayersStore;
     ForgetBGPlayersContainer _forgetBGPlayersStore;
     ForgetInListPlayersContainer _forgetInListPlayersStore;
-    QueuedGroupMap m_QueuedGroupMap;
 };
 
 #define sCFBG CFBG::instance()
