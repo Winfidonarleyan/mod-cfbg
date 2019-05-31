@@ -190,10 +190,7 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     player->setRace(FakeRace);
     this->SetFactionForRace(player, FakeRace);
     player->SetDisplayId(FakeMorph);
-    player->SetNativeDisplayId(FakeMorph);
-
-    LOG_STRING("player->SetDisplayId(_fakePlayerStore[player].RealMorph) - %u - %u", _fakePlayerStore[player].RealMorph, player->GetDisplayId());
-}
+    player->SetNativeDisplayId(FakeMorph)
 
 void CFBG::SetFactionForRace(Player* player, uint8 Race)
 {
