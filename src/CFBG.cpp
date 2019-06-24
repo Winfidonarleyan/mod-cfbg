@@ -1,8 +1,9 @@
 /*
- *  Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan 
-*/
+ * Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan 
+ * Licence MIT https://opensource.org/MIT
+ */
 
-#include "KargatumCFBG.h"
+#include "CFBG.h"
 #include "Config.h"
 #include "Log.h"
 #include "ScriptMgr.h"
@@ -34,17 +35,16 @@ uint32 CFBG::GetBGTeamAverageItemLevel(Battleground* bg, TeamId team)
     uint32 Sum = 0;
     uint32 Count = 0;
 
-    Battleground::BattlegroundPlayerMap const& pl = bg->GetPlayers();
-    for (Battleground::BattlegroundPlayerMap::const_iterator itr = pl.begin(); itr != pl.end(); ++itr)
+    for (auto itr : bg->GetPlayers())
     {
-        Player* plr = itr->second;
-        if (!plr)
+        Player* player = itr.second;
+        if (!player)
             continue;
 
-        if (plr->GetTeamId(true) != team)
+        if (player->GetTeamId(true) != team)
             continue;
 
-        Sum += plr->GetAverageItemLevel();
+        Sum += player->GetAverageItemLevel();
         Count++;
     }
 
@@ -92,7 +92,9 @@ bool CFBG::IsAvgIlvlTeamsInBgEqual(Battleground* bg)
 
 void CFBG::ValidatePlayerForBG(Battleground* bg, Player* player, TeamId teamId)
 {
-    player->SetBGTeamID(teamId);
+    BGData bgdata = player->GetBGData();
+    bgdata.bgTeamId = teamId;
+    player->SetBGData(bgdata);
 
     this->SetFakeRaceAndMorph(player);
 
@@ -276,14 +278,14 @@ bool CFBG::ShouldForgetInListPlayers(Player* player)
 
 void CFBG::DoForgetPlayersInBG(Player* player, Battleground* bg)
 {
-    for (Battleground::BattlegroundPlayerMap::const_iterator itr = bg->GetPlayers().begin(); itr != bg->GetPlayers().end(); ++itr)
+    for (auto itr : bg->GetPlayers())
     {
         // Here we invalidate players in the bg to the added player
         WorldPacket data1(SMSG_INVALIDATE_PLAYER, 8);
-        data1 << itr->first;
+        data1 << itr.first;
         player->GetSession()->SendPacket(&data1);
 
-        if (Player * pPlayer = ObjectAccessor::FindPlayer(itr->first))
+        if (Player* pPlayer = ObjectAccessor::FindPlayer(itr.first))
         {
             player->GetSession()->SendNameQueryOpcode(pPlayer->GetGUID()); // Send namequery answer instantly if player is available
 
@@ -488,11 +490,11 @@ bool CFBG::SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDif
     return true;
 }
 
-// Kargatum_CFBG SC
-class Kargatum_CFBG : public BGScript
+// CFBG custom script
+class CFBG_BG : public BGScript
 {
 public:
-    Kargatum_CFBG() : BGScript("Kargatum_CFBG") {}
+    CFBG_BG() : BGScript("CFBG_BG") {}
 
     void OnBattlegroundBeforeAddPlayer(Battleground* bg, Player* player) override
     {
@@ -531,7 +533,6 @@ public:
         if (!sCFBG->IsSystemEnable())
             return;
 
-        // Kargatum CFBG
         sCFBG->FitPlayerInTeam(player, true, bg);
     }
 
@@ -552,7 +553,6 @@ public:
         if (!sCFBG->IsSystemEnable())
             return;
 
-        // Kargatum CFBG
         sCFBG->FitPlayerInTeam(player, false, bg);
 
         if (sCFBG->IsPlayerFake(player))
@@ -560,10 +560,10 @@ public:
     }
 };
 
-class Kargatum_CFBG_Player : public PlayerScript
+class CFBG_Player : public PlayerScript
 {
 public:
-    Kargatum_CFBG_Player() : PlayerScript("Kargatum_CFBG_Player") { }
+    CFBG_Player() : PlayerScript("CFBG_Player") { }
     
     void OnLogin(Player* player) override
     {
@@ -575,8 +575,8 @@ public:
     }
 };
 
-void AddSC_Kargatum_CFBG()
+void AddSC_CFBG()
 {
-    new Kargatum_CFBG();
-    new Kargatum_CFBG_Player();
+    new CFBG_BG();
+    new CFBG_Player();
 }

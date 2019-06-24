@@ -1,10 +1,11 @@
 #
 # Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan 
+# Licence MIT https://opensource.org/MIT
 #
 
-###############################
-# Custom configuration system #
-###############################
+#############################
+# CFBG configuration system #
+#############################
 [worldserver]
 
 ###################################################################################################

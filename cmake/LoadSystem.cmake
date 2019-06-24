@@ -3,4 +3,4 @@
 # Licence MIT https://opensource.org/MIT
 #
 
-add_definitions(-DKARGATUM_CFBG)
+add_definitions(-D_CFBG)

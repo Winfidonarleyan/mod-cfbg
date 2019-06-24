@@ -1,9 +1,10 @@
 /*
+ * Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan 
+ * Licence MIT https://opensource.org/MIT
+ */
 
-*/
-
-#ifndef _KARGATUM_CFBG_H_
-#define _KARGATUM_CFBG_H_
+#ifndef _CFBG_H_
+#define _CFBG_H_
 
 #include "Common.h"
 #include "Player.h"
@@ -31,8 +32,6 @@ struct FakePlayer
     uint32  RealMorph;
     TeamId  RealTeamID;
 };
-
-
 
 class CFBG
 {
