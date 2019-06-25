@@ -2,6 +2,14 @@
 
 # CrossFaction Battleground
 
+### Module currently requires:
+* For module need apply PR's:
+* * https://github.com/azerothcore/azerothcore-wotlk/pull/2010
+
+## About module
+This module based patch https://gist.github.com/irancore/10913800. 
+But, all mechanics of change of fraction and so on is remade. Faction change occurs only for BG and nowhere else.
+
 #### Features:
 - Change you faction in bg for balance faction.
 
@@ -23,10 +31,6 @@ CFBG.Enable = 1
 CFBG.Include.Avg.Ilvl.Enable = 1
 ```
 
-### Module currently requires:
-* For module need apply PR's:
-* * https://github.com/azerothcore/azerothcore-wotlk/pull/2010
-
 ### How to install
 1. Simply place the module under the `modules` folder of your AzerothCore source folder.
 2. Re-run cmake and launch a clean build of AzerothCore
@@ -38,10 +42,6 @@ If you need to change the module configuration, go to your server configuration 
 ### Usage
 - Enable system `CFBG.Enable = 1`
 - Enter BG
-
-## About module
-This module based patch https://gist.github.com/irancore/10913800. 
-But, all mechanics of change of fraction and so on is remade. Faction change occurs only for BG and nowhere else.
 
 ## Credits
 - [Winfidonarleyan](https://github.com/Winfidonarleyan) (Author of the module)
