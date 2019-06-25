@@ -1,8 +1,47 @@
-# Kargatum CFBG
+# ![logo](https://raw.githubusercontent.com/azerothcore/azerothcore.github.io/master/images/logo-github.png) AzerothCore module
+
+# CrossFaction Battleground
+
+#### Features:
+- Change you faction in bg for balance faction.
+
+#### Config option (CFBG.conf.dist)
+```ini
+###################################################################################################
+#   CrossFaction BattleGround
+#   
+#   CFBG.Enable
+#       Description: Enable mixed alliance and horde in one battleground 
+#       Default: 1
+#
+#   CFBG.Include.Avg.Ilvl.Enable
+#       Description: Enable check average item level for bg
+#       Default: 1
+#
+
+CFBG.Enable = 1
+CFBG.Include.Avg.Ilvl.Enable = 1
+```
+
+### Module currently requires:
+* For module need apply PR's:
+* * https://github.com/azerothcore/azerothcore-wotlk/pull/2010
+
+### How to install
+1. Simply place the module under the `modules` folder of your AzerothCore source folder.
+2. Re-run cmake and launch a clean build of AzerothCore
+3. Done :)
+
+### Edit module configuration (optional)
+If you need to change the module configuration, go to your server configuration folder (where your worldserver or `worldserver.exe` is), copy `CFBG.conf.dist` to `CFBG.conf` and edit that new file.
+
+### Usage
+- Enable system `CFBG.Enable = 1`
+- Enter BG
 
 ## About module
-This module change you faction in bg for balance faction.
-This module based patch https://gist.github.com/irancore/10913800. But, all mechanics of change of fraction and so on is remade. Faction change occurs only for BG and nowhere else.
+This module based patch https://gist.github.com/irancore/10913800. 
+But, all mechanics of change of fraction and so on is remade. Faction change occurs only for BG and nowhere else.
 
 ## Credits
 - [Winfidonarleyan](https://github.com/Winfidonarleyan) (Author of the module)
