@@ -3,7 +3,7 @@
 # CrossFaction Battleground
 
 ### Module currently requires:
-* For module need apply PR's:
+* **MODULE DON'T SUPPORT FOR AC NEED TEST THIS PR'S**
 * * https://github.com/azerothcore/azerothcore-wotlk/pull/2010
 
 ## About module
