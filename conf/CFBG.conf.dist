@@ -9,7 +9,7 @@
 [worldserver]
 
 ###################################################################################################
-#   Cross Faction BattleGround
+#   CFBG
 #   
 #   CFBG.Enable
 #       Description: Enable mixed alliance and horde in one battleground 
@@ -17,8 +17,13 @@
 #
 #   CFBG.Include.Avg.Ilvl.Enable
 #       Description: Enable check average item level for bg
-#       Default: 1
+#       Default: 0
+#
+#   CFBG.Players.Count.In.Group
+#       Description: Maximum players in party for enter queue
+#       Default: 3
 #
 
 CFBG.Enable = 1
-CFBG.Include.Avg.Ilvl.Enable = 1
+CFBG.Include.Avg.Ilvl.Enable = 0
+CFBG.Players.Count.In.Group = 3

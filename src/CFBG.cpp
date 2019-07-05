@@ -18,9 +18,26 @@ CFBG* CFBG::instance()
     return &instance;
 }
 
-bool CFBG::IsSystemEnable()
+void CFBG::LoadConfig()
 {
-    return sConfigMgr->GetBoolDefault("CFBG.Enable", false);
+    _IsEnableSystem = sConfigMgr->GetBoolDefault("CFBG.Enable", false);
+    _IsEnableAvgIlvl = sConfigMgr->GetBoolDefault("CFBG.Include.Avg.Ilvl.Enable", false);
+    _MaxPlayersCountInGroup = sConfigMgr->GetIntDefault("CFBG.Players.Count.In.Group", 3);
+}
+
+bool CFBG::IsEnableSystem()
+{
+    return _IsEnableSystem;
+}
+
+bool CFBG::IsEnableAvgIlvl()
+{
+    return _IsEnableAvgIlvl;
+}
+
+uint32 CFBG::GetMaxPlayersCountInGroup()
+{
+    return _MaxPlayersCountInGroup;
 }
 
 uint32 CFBG::GetBGTeamAverageItemLevel(Battleground* bg, TeamId team)
@@ -63,8 +80,8 @@ TeamId CFBG::GetLowerTeamIdInBG(Battleground* bg)
     if (Diff)
         return PlCountA < PlCountH ? TEAM_ALLIANCE : TEAM_HORDE;
 
-    if (sConfigMgr->GetBoolDefault("CFBG.Include.Avg.Ilvl.Enable", false) && !this->IsAvgIlvlTeamsInBgEqual(bg))
-        return this->GetLowerAvgIlvlTeamInBg(bg);
+    if (IsEnableAvgIlvl() && !IsAvgIlvlTeamsInBgEqual(bg))
+        return GetLowerAvgIlvlTeamInBg(bg);
 
     uint8 rnd = urand(0, 1);
 
@@ -76,16 +93,16 @@ TeamId CFBG::GetLowerTeamIdInBG(Battleground* bg)
 
 TeamId CFBG::GetLowerAvgIlvlTeamInBg(Battleground* bg)
 {
-    uint32 AvgAlliance = this->GetBGTeamAverageItemLevel(bg, TeamId::TEAM_ALLIANCE);
-    uint32 AvgHorde = this->GetBGTeamAverageItemLevel(bg, TeamId::TEAM_HORDE);
+    uint32 AvgAlliance = GetBGTeamAverageItemLevel(bg, TeamId::TEAM_ALLIANCE);
+    uint32 AvgHorde = GetBGTeamAverageItemLevel(bg, TeamId::TEAM_HORDE);
 
     return (AvgAlliance < AvgHorde) ? TEAM_ALLIANCE : TEAM_HORDE;
 }
 
 bool CFBG::IsAvgIlvlTeamsInBgEqual(Battleground* bg)
 {
-    uint32 AvgAlliance = this->GetBGTeamAverageItemLevel(bg, TeamId::TEAM_ALLIANCE);
-    uint32 AvgHorde = this->GetBGTeamAverageItemLevel(bg, TeamId::TEAM_HORDE);
+    uint32 AvgAlliance = GetBGTeamAverageItemLevel(bg, TeamId::TEAM_ALLIANCE);
+    uint32 AvgHorde = GetBGTeamAverageItemLevel(bg, TeamId::TEAM_HORDE);
 
     return AvgAlliance == AvgHorde;
 }
@@ -96,7 +113,7 @@ void CFBG::ValidatePlayerForBG(Battleground* bg, Player* player, TeamId teamId)
     bgdata.bgTeamId = teamId;
     player->SetBGData(bgdata);
 
-    this->SetFakeRaceAndMorph(player);
+    SetFakeRaceAndMorph(player);
 
     float x, y, z, o;
     bg->GetTeamStartLoc(teamId, x, y, z, o);
@@ -116,7 +133,7 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     if (player->GetTeamId(true) == player->GetBgTeamId())
         return;
 
-    if (this->IsPlayerFake(player))
+    if (IsPlayerFake(player))
         return;
 
     uint8 FakeRace;
@@ -190,7 +207,7 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     _fakePlayerStore[player] = fakePlayer;
 
     player->setRace(FakeRace);
-    this->SetFactionForRace(player, FakeRace);
+    SetFactionForRace(player, FakeRace);
     player->SetDisplayId(FakeMorph);
     player->SetNativeDisplayId(FakeMorph);
 }
@@ -205,13 +222,13 @@ void CFBG::SetFactionForRace(Player* player, uint8 Race)
 
 void CFBG::ClearFakePlayer(Player* player)
 {
-    if (!this->IsPlayerFake(player))
+    if (!IsPlayerFake(player))
         return;
 
     player->setRace(_fakePlayerStore[player].RealRace);
     player->SetDisplayId(_fakePlayerStore[player].RealMorph);
     player->SetNativeDisplayId(_fakePlayerStore[player].RealMorph);
-    this->SetFactionForRace(player, _fakePlayerStore[player].RealRace);
+    SetFactionForRace(player, _fakePlayerStore[player].RealRace);
 
     _fakePlayerStore.erase(player);
 }
@@ -300,7 +317,7 @@ void CFBG::DoForgetPlayersInBG(Player* player, Battleground* bg)
 
 bool CFBG::SendRealNameQuery(Player* player)
 {
-    if (this->IsPlayingNative(player))
+    if (IsPlayingNative(player))
         return false;
 
     WorldPacket data(SMSG_NAME_QUERY_RESPONSE, (8 + 1 + 1 + 1 + 1 + 1 + 10));
@@ -324,7 +341,7 @@ bool CFBG::IsPlayingNative(Player* player)
 
 bool CFBG::FillPlayersToCFBGWithSpecific(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId)
 {
-    if (!this->IsSystemEnable())
+    if (!IsEnableSystem())
         return false;
 
     // clear selection pools
@@ -390,7 +407,7 @@ bool CFBG::FillPlayersToCFBGWithSpecific(BattlegroundQueue* bgqueue, Battlegroun
 
 bool CFBG::FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id)
 {
-    if (!this->IsSystemEnable())
+    if (!IsEnableSystem())
         return false;
 
     // clear selection pools
@@ -452,22 +469,22 @@ void CFBG::UpdateForget(Player* player)
     Battleground* bg = player->GetBattleground();
     if (bg)
     {
-        if (this->ShouldForgetBGPlayers(player) && bg)
+        if (ShouldForgetBGPlayers(player) && bg)
         {
-            this->DoForgetPlayersInBG(player, bg);
-            this->SetForgetBGPlayers(player, false);
+            DoForgetPlayersInBG(player, bg);
+            SetForgetBGPlayers(player, false);
         }
     }
-    else if (this->ShouldForgetInListPlayers(player))
+    else if (ShouldForgetInListPlayers(player))
     {
-        this->DoForgetPlayersInList(player);
-        this->SetForgetInListPlayers(player, false);
+        DoForgetPlayersInList(player);
+        SetForgetInListPlayers(player, false);
     }
 }
 
 bool CFBG::SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDifficultyEntry const* bracketEntry, Player* leader)
 {
-    if (!this->IsSystemEnable())
+    if (!IsEnableSystem())
         return false;
 
     BattlegroundBracketId bracketId = bracketEntry->GetBracketId();
@@ -475,19 +492,40 @@ bool CFBG::SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDif
     char const* bgName = bg->GetName();
     uint32 q_min_level = std::min(bracketEntry->minLevel, (uint32)80);
     uint32 q_max_level = std::min(bracketEntry->maxLevel, (uint32)80);
-    uint32 qHorde = 0;
-    uint32 qAlliance = 0;
 
     uint32 MinPlayers = bg->GetMinPlayersPerTeam() * 2;
-    uint32 qPlayers = 0;
-
-    for (BattlegroundQueue::GroupsQueueType::const_iterator itr = bgqueue->m_QueuedGroups[bracketId][BG_QUEUE_CFBG].begin(); itr != bgqueue->m_QueuedGroups[bracketId][BG_QUEUE_CFBG].end(); ++itr)
-        if (!(*itr)->IsInvitedToBGInstanceGUID)
-            qPlayers += (*itr)->Players.size();
+    uint32 qPlayers = bgqueue->GetPlayersCountInGroupsQueue(bracketId, BG_QUEUE_CFBG);
 
     ChatHandler(leader->GetSession()).PSendSysMessage("CFBG %s (Levels: %u - %u). Registered: %u/%u", bgName, q_min_level, q_max_level, qPlayers, MinPlayers);
 
     return true;
+}
+
+bool CFBG::IsAllCheckPassed(Player* player, bool JoinAsGroup, Battleground* bg)
+{
+    if (!IsEnableSystem())
+        return true;
+
+    if (JoinAsGroup)
+    {
+        Group* group = player->GetGroup();
+        if (!group)
+            return true;
+
+        if (group->isRaidGroup() || group->GetMembersCount() > GetMaxPlayersCountInGroup())
+            OutErrorAtJoin(player);
+        
+        return false;
+    }
+        
+    return true;
+}
+
+void CFBG::OutErrorAtJoin(Player* player)
+{
+    WorldPacket data;
+    sBattlegroundMgr->BuildGroupJoinedBattlegroundPacket(&data, ERR_BATTLEGROUND_JOIN_FAILED);
+    player->GetSession()->SendPacket(&data);
 }
 
 // CFBG custom script
@@ -501,7 +539,7 @@ public:
         if (!bg || bg->isArena() || !player)
             return;
 
-        if (!sCFBG->IsSystemEnable())
+        if (!sCFBG->IsEnableSystem())
             return;
 
         TeamId teamid;
@@ -530,7 +568,7 @@ public:
 
     void OnBattlegroundAddPlayer(Battleground* bg, Player* player) override
     {
-        if (!sCFBG->IsSystemEnable())
+        if (!sCFBG->IsEnableSystem())
             return;
 
         sCFBG->FitPlayerInTeam(player, true, bg);
@@ -541,7 +579,7 @@ public:
         if (!bg || !player || bg->isArena())
             return;
 
-        if (!sCFBG->IsSystemEnable())
+        if (!sCFBG->IsEnableSystem())
             return;
 
         if (sCFBG->IsPlayerFake(player))
@@ -550,7 +588,7 @@ public:
 
     void OnBattlegroundRemovePlayerAtLeave(Battleground* bg, Player* player) override
     {
-        if (!sCFBG->IsSystemEnable())
+        if (!sCFBG->IsEnableSystem())
             return;
 
         sCFBG->FitPlayerInTeam(player, false, bg);
@@ -567,7 +605,7 @@ public:
     
     void OnLogin(Player* player) override
     {
-        if (!sCFBG->IsSystemEnable())
+        if (!sCFBG->IsEnableSystem())
             return;
 
         if (player->GetTeamId(true) != player->GetBgTeamId())
@@ -575,8 +613,20 @@ public:
     }
 };
 
+class CFBG_World : public WorldScript
+{
+public:
+    CFBG_World() : WorldScript("CFBG_World") { }
+
+    void OnAfterConfigLoad(bool /*Reload*/) override
+    {
+        sCFBG->LoadConfig();
+    }
+};
+
 void AddSC_CFBG()
 {
     new CFBG_BG();
     new CFBG_Player();
+    new CFBG_World();
 }

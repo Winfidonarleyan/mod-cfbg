@@ -38,7 +38,11 @@ class CFBG
 public:
     static CFBG* instance();
 
-    bool IsSystemEnable();
+    void LoadConfig();
+
+    bool IsEnableSystem();
+    bool IsEnableAvgIlvl();
+    uint32 GetMaxPlayersCountInGroup();
 
     uint32 GetBGTeamAverageItemLevel(Battleground* bg, TeamId team);
     uint32 GetAllPlayersCountInBG(Battleground* bg);
@@ -64,6 +68,8 @@ public:
     void SetForgetInListPlayers(Player* player, bool value);
     void UpdateForget(Player* player);
     bool SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDifficultyEntry const* bracketEntry, Player* leader);
+    bool IsAllCheckPassed(Player* player, bool JoinAsGroup, Battleground* bg);
+    void OutErrorAtJoin(Player* player);
 
     bool FillPlayersToCFBGWithSpecific(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId);
     bool FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id);
@@ -78,6 +84,11 @@ private:
     FakeNamePlayersContainer _fakeNamePlayersStore;
     ForgetBGPlayersContainer _forgetBGPlayersStore;
     ForgetInListPlayersContainer _forgetInListPlayersStore;
+
+    // For config
+    bool _IsEnableSystem;
+    bool _IsEnableAvgIlvl;
+    uint32 _MaxPlayersCountInGroup;
 };
 
 #define sCFBG CFBG::instance()
