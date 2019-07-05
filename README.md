@@ -3,8 +3,8 @@
 # CrossFaction Battleground
 
 ### Module currently requires:
-* **MODULE DON'T SUPPORT FOR AC NEED TEST THIS PR'S**
-* * https://github.com/azerothcore/azerothcore-wotlk/pull/2010
+* **MODULE DON'T SUPPORT FOR AC OFFICIALLY NEED TEST THIS PR'S**
+* * https://github.com/azerothcore/azerothcore-wotlk/pull/2064
 
 ## About module
 This module based patch https://gist.github.com/irancore/10913800. 
