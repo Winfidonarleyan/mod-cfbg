@@ -500,7 +500,7 @@ bool CFBG::SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDif
     return true;
 }
 
-bool CFBG::IsAllCheckPassed(Player* player, bool JoinAsGroup, Battleground* bg)
+bool CFBG::IsAllCheckPassed(Player* player, bool JoinAsGroup, Battleground* /*bg*/)
 {
     if (!IsEnableSystem())
         return true;
