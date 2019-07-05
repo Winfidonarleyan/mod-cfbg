@@ -341,7 +341,7 @@ bool CFBG::IsPlayingNative(Player* player)
 
 bool CFBG::FillPlayersToCFBGWithSpecific(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId)
 {
-    if (!IsEnableSystem())
+    if (!IsEnableSystem() || bg->isArena() || bg->isRated())
         return false;
 
     // clear selection pools
@@ -407,7 +407,7 @@ bool CFBG::FillPlayersToCFBGWithSpecific(BattlegroundQueue* bgqueue, Battlegroun
 
 bool CFBG::FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id)
 {
-    if (!IsEnableSystem())
+    if (!IsEnableSystem() || bg->isArena() || bg->isRated())
         return false;
 
     // clear selection pools
