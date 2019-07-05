@@ -492,7 +492,6 @@ bool CFBG::SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDif
     char const* bgName = bg->GetName();
     uint32 q_min_level = std::min(bracketEntry->minLevel, (uint32)80);
     uint32 q_max_level = std::min(bracketEntry->maxLevel, (uint32)80);
-
     uint32 MinPlayers = bg->GetMinPlayersPerTeam() * 2;
     uint32 qPlayers = bgqueue->GetPlayersCountInGroupsQueue(bracketId, BG_QUEUE_CFBG);
 
