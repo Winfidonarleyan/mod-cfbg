@@ -194,12 +194,10 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
         }
     }
 
-    TeamId FakeTeamID = player->TeamIdForRace(FakeRace);
-
     FakePlayer fakePlayer;
     fakePlayer.FakeMorph    = FakeMorph;
     fakePlayer.FakeRace     = FakeRace;
-    fakePlayer.FakeTeamID   = FakeTeamID;
+    fakePlayer.FakeTeamID   = player->TeamIdForRace(FakeRace);
     fakePlayer.RealMorph    = player->GetDisplayId();
     fakePlayer.RealRace     = player->getRace(true);
     fakePlayer.RealTeamID   = player->GetTeamId(true);
