@@ -73,8 +73,6 @@ public:
     void SetForgetInListPlayers(Player* player, bool value);
     void UpdateForget(Player* player);
     bool SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDifficultyEntry const* bracketEntry, Player* leader);
-    bool IsAllCheckPassed(Player* player, bool JoinAsGroup, Battleground* bg);
-    void OutErrorAtJoin(Player* player);
 
     bool FillPlayersToCFBGWithSpecific(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId);
     bool FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id);
