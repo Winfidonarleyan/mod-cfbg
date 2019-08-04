@@ -233,7 +233,7 @@ void CFBG::ClearFakePlayer(Player* player)
 
 bool CFBG::IsPlayerFake(Player* player)
 {
-    FakePlayersContainer::const_iterator itr = _fakePlayerStore.find(player);
+    auto const& itr = _fakePlayerStore.find(player);
     if (itr != _fakePlayerStore.end())
         return true;
 
@@ -300,15 +300,15 @@ void CFBG::DoForgetPlayersInBG(Player* player, Battleground* bg)
         data1 << itr.first;
         player->GetSession()->SendPacket(&data1);
 
-        if (Player* pPlayer = ObjectAccessor::FindPlayer(itr.first))
+        if (Player* _player = ObjectAccessor::FindPlayer(itr.first))
         {
-            player->GetSession()->SendNameQueryOpcode(pPlayer->GetGUID()); // Send namequery answer instantly if player is available
+            player->GetSession()->SendNameQueryOpcode(_player->GetGUID()); // Send namequery answer instantly if player is available
 
             // Here we invalidate the player added to players in the bg
             WorldPacket data2(SMSG_INVALIDATE_PLAYER, 8);
             data2 << player->GetGUID();
-            pPlayer->GetSession()->SendPacket(&data2);
-            pPlayer->GetSession()->SendNameQueryOpcode(player->GetGUID());
+            _player->GetSession()->SendPacket(&data2);
+            _player->GetSession()->SendNameQueryOpcode(player->GetGUID());
         }
     }
 }
