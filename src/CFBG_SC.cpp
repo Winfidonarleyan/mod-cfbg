@@ -179,14 +179,20 @@ public:
         if (!player || !sCFBG->IsEnableSystem())
             return;
 
-        if (type != CHAT_MSG_SAY || type != CHAT_MSG_EMOTE || type != CHAT_MSG_YELL)
-            return;
-
         Battleground* bg = player->GetBattleground();
 
         if (!bg || bg->isArena())
             return;
 
+        // skip addon lang and universal
+        if (lang == LANG_UNIVERSAL || lang == LANG_ADDON)
+            return;
+
+        // skip addon and system message
+        if (type == CHAT_MSG_ADDON || type == CHAT_MSG_SYSTEM)
+            return;
+
+        // to gm lang
         lang = LANG_UNIVERSAL;
     }
 
