@@ -14,7 +14,7 @@
 class CFBG_BG : public BGScript
 {
 public:
-    CFBG_BG() : BGScript("CFBG_BG") {}
+    CFBG_BG() : BGScript("CFBG_BG") { }
 
     void OnBattlegroundBeforeAddPlayer(Battleground* bg, Player* player) override
     {
@@ -80,7 +80,7 @@ public:
             sCFBG->ClearFakePlayer(player);
     }
 
-    void OnAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* /*leader*/, Group* /*grp*/, PvPDifficultyEntry const* /*bracketEntry*/, bool /*isPremade*/)
+    void OnAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* /*leader*/, Group* /*grp*/, PvPDifficultyEntry const* /*bracketEntry*/, bool /*isPremade*/) override
     {
         if (!queue)
             return;
