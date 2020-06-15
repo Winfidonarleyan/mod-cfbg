@@ -1,5 +1,5 @@
 /*
- * Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan 
+ * Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan
  * Licence MIT https://opensource.org/MIT
  */
 
@@ -14,10 +14,29 @@
 
 enum FakeMorphs
 {
-    FAKE_F_TAUREN   = 20584,
-    FAKE_M_TAUREN   = 20585,
-    FAKE_M_NELF     = 20318,
-    FAKE_F_DRAENEI  = 20323
+    // FAKE_M_GOBLIN = 20582,
+    // FAKE_F_GOBLIN = 20583,
+
+    FAKE_M_FEL_ORC    = 21267,
+    FAKE_F_ORC        = 20316,
+
+    FAKE_M_DWARF      = 20317,
+
+    FAKE_M_NIGHT_ELF  = 20318,
+
+    FAKE_F_DRAENEI    = 20323,
+
+    FAKE_M_TROLL      = 20321,
+
+    FAKE_M_HUMAN      = 19723,
+    FAKE_F_HUMAN      = 19724,
+    FAKE_M_BLOOD_ELF  = 20578,
+    FAKE_F_BLOOD_ELF  = 20579,
+    FAKE_F_GNOME      = 20320,
+    FAKE_M_GNOME      = 20580,
+    FAKE_F_TAUREN     = 20584,
+    FAKE_M_TAUREN     = 20585
+
 };
 
 struct FakePlayer

@@ -1,5 +1,5 @@
 /*
- * Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan 
+ * Copyright (С) since 2019 Andrei Guluaev (Winfidonarleyan/Kargatum) https://github.com/Winfidonarleyan
  * Licence MIT https://opensource.org/MIT
  */
 
@@ -140,58 +140,53 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     uint8 FakeRace;
     uint32 FakeMorph;
 
-    if (player->getClass() == CLASS_DRUID)
-    {
-        if (player->GetTeamId(true) == TEAM_ALLIANCE)
-        {
+    if (player->getClass() == CLASS_DRUID) {
+        if (player->GetTeamId(true) == TEAM_ALLIANCE) {
             FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_TAUREN : FAKE_F_TAUREN;
             FakeRace = RACE_TAUREN;
-        }
-        else if (player->getGender() == GENDER_MALE) // HORDE PLAYER, ONLY HAVE MALE Night Elf ID
-        {
-            FakeMorph = FAKE_M_NELF;
+        } else if (player->getGender() == GENDER_MALE) { // HORDE PLAYER, ONLY HAVE MALE Night Elf ID {
+            FakeMorph = FAKE_M_NIGHT_ELF;
             FakeRace = RACE_NIGHTELF;
-        }
-        else
+        } else {
             FakeRace = player->GetTeamId(true) == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
+        }
 
-        if (player->GetTeamId(true) == TEAM_HORDE)
-        {
-            if (player->getGender() == GENDER_MALE)
-                FakeMorph = 19723;
-            else
-                FakeMorph = 19724;
+        if (player->GetTeamId(true) == TEAM_HORDE) {
+            if (player->getGender() == GENDER_MALE) {
+                FakeMorph = FAKE_M_HUMAN;
+            } else {
+                FakeMorph = FAKE_F_HUMAN;
+            }
         }
         else
         {
-            if (player->getGender() == GENDER_MALE)
-                FakeMorph = 20578;
-            else
-                FakeMorph = 20579;
+            if (player->getGender() == GENDER_MALE) {
+                FakeMorph = FAKE_M_BLOOD_ELF;
+            } else {
+                FakeMorph = FAKE_F_BLOOD_ELF;
+            }
         }
-    }
-    else if (player->getClass() == CLASS_SHAMAN && player->GetTeamId(true) == TEAM_HORDE && player->getGender() == GENDER_FEMALE)
-    {
+    } else if (player->getClass() == CLASS_SHAMAN && player->GetTeamId(true) == TEAM_HORDE && player->getGender() == GENDER_FEMALE) {
         FakeMorph = FAKE_F_DRAENEI; // Female Draenei
         FakeRace = RACE_DRAENEI;
-    }
-    else
-    {
+    } else {
         FakeRace = player->GetTeamId(true) == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
 
         if (player->GetTeamId(true) == TEAM_HORDE)
         {
-            if (player->getGender() == GENDER_MALE)
-                FakeMorph = 19723;
-            else
-                FakeMorph = 19724;
+            if (player->getGender() == GENDER_MALE) {
+                FakeMorph = FAKE_M_HUMAN;
+            } else {
+                FakeMorph = FAKE_F_HUMAN;
+            }
         }
         else
         {
-            if (player->getGender() == GENDER_MALE)
-                FakeMorph = 20578;
-            else
-                FakeMorph = 20579;
+            if (player->getGender() == GENDER_MALE) {
+                FakeMorph = FAKE_M_BLOOD_ELF;
+            } else {
+                FakeMorph = FAKE_F_BLOOD_ELF;
+            }
         }
     }
 
@@ -254,7 +249,7 @@ void CFBG::DoForgetPlayersInList(Player* player)
         if (Player* _player = ObjectAccessor::FindPlayer(itr.second))
             player->GetSession()->SendNameQueryOpcode(_player->GetGUID());
     }
-     
+
     _fakeNamePlayersStore.erase(player);
 }
 
@@ -431,16 +426,16 @@ bool CFBG::SendMessageQueue(BattlegroundQueue* bgqueue, Battleground* bg, PvPDif
     else
     {
         auto searchGUID = BGSpam.find(leader->GetGUID());
-        
+
         if (searchGUID == BGSpam.end())
             BGSpam[leader->GetGUID()] = 0;
-        
+
         if (sWorld->GetGameTime() - BGSpam[leader->GetGUID()] >= 30)
         {
             BGSpam[leader->GetGUID()] = sWorld->GetGameTime();
             sWorld->SendWorldText(LANG_BG_QUEUE_ANNOUNCE_WORLD, bgName, q_min_level, q_max_level, qPlayers, MinPlayers);
         }
     }
-        
+
     return true;
 }
