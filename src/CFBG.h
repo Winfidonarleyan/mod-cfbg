@@ -25,6 +25,7 @@ enum FakeMorphs
     FAKE_M_NIGHT_ELF  = 20318,
 
     FAKE_F_DRAENEI    = 20323,
+    FAKE_M_BROKEN_DRAENEI = 21105,
 
     FAKE_M_TROLL      = 20321,
 

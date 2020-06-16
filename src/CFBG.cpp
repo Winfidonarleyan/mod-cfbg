@@ -128,19 +128,23 @@ uint32 CFBG::GetAllPlayersCountInBG(Battleground* bg)
 
 void CFBG::SetFakeRaceAndMorph(Player* player)
 {
-    if (!player->InBattleground())
+    if (!player->InBattleground()) {
         return;
+    }
 
-    if (player->GetTeamId(true) == player->GetBgTeamId())
+    if (player->GetTeamId(true) == player->GetBgTeamId()) {
         return;
+    }
 
-    if (IsPlayerFake(player))
+    if (IsPlayerFake(player)) {
         return;
+    }
 
     uint8 FakeRace;
     uint32 FakeMorph;
 
     if (player->getClass() == CLASS_DRUID) {
+
         if (player->GetTeamId(true) == TEAM_ALLIANCE) {
             FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_TAUREN : FAKE_F_TAUREN;
             FakeRace = RACE_TAUREN;
@@ -152,41 +156,21 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
         }
 
         if (player->GetTeamId(true) == TEAM_HORDE) {
-            if (player->getGender() == GENDER_MALE) {
-                FakeMorph = FAKE_M_HUMAN;
-            } else {
-                FakeMorph = FAKE_F_HUMAN;
-            }
+            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_HUMAN : FAKE_F_HUMAN;
+        } else {
+            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_BLOOD_ELF : FAKE_F_BLOOD_ELF;
         }
-        else
-        {
-            if (player->getGender() == GENDER_MALE) {
-                FakeMorph = FAKE_M_BLOOD_ELF;
-            } else {
-                FakeMorph = FAKE_F_BLOOD_ELF;
-            }
-        }
-    } else if (player->getClass() == CLASS_SHAMAN && player->GetTeamId(true) == TEAM_HORDE && player->getGender() == GENDER_FEMALE) {
-        FakeMorph = FAKE_F_DRAENEI; // Female Draenei
+
+    } else if (player->getClass() == CLASS_SHAMAN && player->GetTeamId(true) == TEAM_HORDE) {
+        FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_BROKEN_DRAENEI : FAKE_F_DRAENEI;
         FakeRace = RACE_DRAENEI;
     } else {
         FakeRace = player->GetTeamId(true) == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
 
-        if (player->GetTeamId(true) == TEAM_HORDE)
-        {
-            if (player->getGender() == GENDER_MALE) {
-                FakeMorph = FAKE_M_HUMAN;
-            } else {
-                FakeMorph = FAKE_F_HUMAN;
-            }
-        }
-        else
-        {
-            if (player->getGender() == GENDER_MALE) {
-                FakeMorph = FAKE_M_BLOOD_ELF;
-            } else {
-                FakeMorph = FAKE_F_BLOOD_ELF;
-            }
+        if (player->GetTeamId(true) == TEAM_HORDE) {
+            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_HUMAN : FAKE_F_HUMAN;
+        } else {
+            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_BLOOD_ELF : FAKE_F_BLOOD_ELF;
         }
     }
 
