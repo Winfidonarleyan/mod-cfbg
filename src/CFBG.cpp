@@ -126,6 +126,255 @@ uint32 CFBG::GetAllPlayersCountInBG(Battleground* bg)
     return bg->GetPlayersSize();
 }
 
+uint8 CFBG::getRandomRace(uint8 races[]) {
+    uint8 len = sizeof(races)/sizeof(uint8);
+    int r = urand(1, len);
+    return races[r];
+}
+
+uint32 CFBG::getMorphFromRace(uint8 race, uint8 gender) {
+
+    if (gender == GENDER_MALE) {
+        switch(race) {
+            case RACE_ORC:
+                return FAKE_M_FEL_ORC;
+            case RACE_DWARF:
+                return FAKE_M_DWARF;
+            case RACE_NIGHTELF:
+                return FAKE_M_NIGHT_ELF;
+            case RACE_DRAENEI:
+                return FAKE_M_BROKEN_DRAENEI;
+            case RACE_TROLL:
+                return FAKE_M_TROLL;
+            case RACE_HUMAN:
+                return FAKE_M_HUMAN;
+            case RACE_BLOODELF:
+                return FAKE_M_BLOOD_ELF;
+            case RACE_GNOME:
+                return FAKE_M_GNOME;
+            case RACE_TAUREN:
+                return FAKE_M_TAUREN;
+        }
+    } else {
+        // FEMALE DWARF, NIGHT ELF, TROLL are missing
+        switch(race) {
+            case RACE_ORC:
+                return FAKE_F_ORC;
+            case RACE_DRAENEI:
+                return FAKE_F_DRAENEI;
+            case RACE_HUMAN:
+                return FAKE_F_HUMAN;
+            case RACE_BLOODELF:
+                return FAKE_F_BLOOD_ELF;
+            case RACE_GNOME:
+                return FAKE_F_GNOME;
+            case RACE_TAUREN:
+                return FAKE_F_TAUREN;
+        }
+    }
+}
+
+
+void CFBG::randomRanceMorph(uint8* race, uint32* morph, TeamId team, uint8 _class, uint8 gender) {
+
+    // if alliance find a horde race
+    if (team == TEAM_ALLIANCE) {
+
+        // default race
+        *race = RACE_BLOODELF;
+
+        if (gender == GENDER_MALE) {
+            *morph = FAKE_M_BLOOD_ELF;
+
+            switch (_class) {
+                case CLASS_DRUID:
+                    *race = RACE_TAUREN;
+                    *morph = FAKE_M_TAUREN;
+                    break;
+                case CLASS_SHAMAN:
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN, RACE_TROLL]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_WARRIOR:
+                    // UNDEAD morph is missing
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN, RACE_TROLL]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_PALADIN:
+                    // BLOOD ELF, so default race
+                    break;
+                case CLASS_HUNTER:
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN, RACE_TROLL, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_ROGUE:
+                    *race = getRandomRace([RACE_ORC, RACE_TROLL, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_DEATH_KNIGHT:
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN, RACE_TROLL, RACE_TAUREN, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_MAGE:
+                case CLASS_PRIEST:
+                    // UNDEAD morph is missing
+                    *race = getRandomRace([RACE_TROLL, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_WARLOCK:
+                    // UNDEAD morph is missing
+                    *race = getRandomRace([RACE_ORC, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+            }
+        }  else {
+            // default morph because TROLL morph is missing for FEMALE
+            *morph = FAKE_F_BLOOD_ELF;
+
+            switch (_class) {
+                case CLASS_DRUID:
+                    *race = RACE_TAUREN;
+                    *morph = FAKE_F_TAUREN;
+                    break;
+                case CLASS_SHAMAN:
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_WARRIOR:
+                    // UNDEAD morph is missing
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_HUNTER:
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_ROGUE:
+                    *race = getRandomRace([RACE_ORC, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_DEATH_KNIGHT:
+                    *race = getRandomRace([RACE_ORC, RACE_TAUREN, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_WARLOCK:
+                    // UNDEAD morph is missing
+                    *race = getRandomRace([RACE_ORC, RACE_BLOODELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_PALADIN:
+                    // BLOOD ELF, so default race
+                case CLASS_MAGE:
+                case CLASS_PRIEST:
+                    // UNDEAD morph is missing
+                    // TROLL morph is missing for female
+                    // BLOOD ELF, so default race
+                    break;
+            }
+        }
+    }
+
+
+    } else { // otherwise find an alliance race
+
+        // default race
+        *race = RACE_HUMAN;
+
+        if (gender == GENDER_MALE) {
+            *morph = FAKE_M_HUMAN;
+
+            switch (_class) {
+                case CLASS_DRUID:
+                    *race = RACE_NIGHTELF;
+                    *morph = FAKE_M_NIGHT_ELF;
+                    break;
+                case CLASS_SHAMAN:
+                    *race = RACE_DRAENEI;
+                    *morph = FAKE_M_BROKEN_DRAENEI;
+                    break;
+                case CLASS_WARRIOR:
+                    *race = getRandomRace([RACE_HUMAN, RACE_DWARF, RACE_GNOME, RACE_NIGHTELF, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_PALADIN:
+                    *race = getRandomRace([RACE_HUMAN, RACE_DWARF, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_HUNTER:
+                    *race = getRandomRace([RACE_DWARF, RACE_NIGHTELF, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_ROGUE:
+                    *race = getRandomRace([RACE_HUMAN, RACE_DWARF, RACE_GNOME, RACE_NIGHTELF]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_PRIEST:
+                    *race = getRandomRace([RACE_HUMAN, RACE_DWARF, RACE_NIGHTELF, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_DEATH_KNIGHT:
+                    *race = getRandomRace([RACE_HUMAN, RACE_DWARF, RACE_GNOME, RACE_NIGHTELF, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_MAGE :
+                    *race = getRandomRace([RACE_HUMAN, RACE_GNOME, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_WARLOCK:
+                    *race = getRandomRace([RACE_HUMAN, RACE_GNOME]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+            }
+
+        } else {
+            // NIGHT ELF and DWARF morph are missing for FEMALE
+            *morph = FAKE_F_HUMAN;
+
+            switch (_class) {
+                case CLASS_DRUID:
+                    break;
+                case CLASS_SHAMAN:
+                    *race = RACE_DRAENEI;
+                    *morph = FAKE_F_DRAENEI;
+                    break;
+                case CLASS_WARRIOR:
+                    *race = getRandomRace([RACE_HUMAN, RACE_GNOME, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_PALADIN:
+                    *race = getRandomRace([RACE_HUMAN, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_HUNTER:
+                    *race = RACE_DRAENEI;
+                    *morph = FAKE_F_DRAENEI;
+                    break;
+                case CLASS_ROGUE:
+                    *race = getRandomRace([RACE_HUMAN, RACE_GNOME]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_PRIEST:
+                    *race = getRandomRace([RACE_HUMAN, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_DEATH_KNIGHT:
+                    *race = getRandomRace([RACE_HUMAN, RACE_GNOME, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_MAGE :
+                    *race = getRandomRace([RACE_HUMAN, RACE_GNOME, RACE_DRAENEI]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+                case CLASS_WARLOCK:
+                    *race = getRandomRace([RACE_HUMAN, RACE_GNOME]);
+                    *morph = getMorphFromRace(*race, gender);
+                    break;
+            }
+        }
+    }
+
+}
+
 void CFBG::SetFakeRaceAndMorph(Player* player)
 {
     if (!player->InBattleground()) {
@@ -143,36 +392,8 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
     uint8 FakeRace;
     uint32 FakeMorph;
 
-    if (player->getClass() == CLASS_DRUID) {
-
-        if (player->GetTeamId(true) == TEAM_ALLIANCE) {
-            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_TAUREN : FAKE_F_TAUREN;
-            FakeRace = RACE_TAUREN;
-        } else if (player->getGender() == GENDER_MALE) { // HORDE PLAYER, ONLY HAVE MALE Night Elf ID {
-            FakeMorph = FAKE_M_NIGHT_ELF;
-            FakeRace = RACE_NIGHTELF;
-        } else {
-            FakeRace = player->GetTeamId(true) == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
-        }
-
-        if (player->GetTeamId(true) == TEAM_HORDE) {
-            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_HUMAN : FAKE_F_HUMAN;
-        } else {
-            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_BLOOD_ELF : FAKE_F_BLOOD_ELF;
-        }
-
-    } else if (player->getClass() == CLASS_SHAMAN && player->GetTeamId(true) == TEAM_HORDE) {
-        FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_BROKEN_DRAENEI : FAKE_F_DRAENEI;
-        FakeRace = RACE_DRAENEI;
-    } else {
-        FakeRace = player->GetTeamId(true) == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
-
-        if (player->GetTeamId(true) == TEAM_HORDE) {
-            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_HUMAN : FAKE_F_HUMAN;
-        } else {
-            FakeMorph = player->getGender() == GENDER_MALE ? FAKE_M_BLOOD_ELF : FAKE_F_BLOOD_ELF;
-        }
-    }
+    // generate random race and morph
+    this->randomRanceMorph(&FakeRace, &FakeMorph, player->GetTeamId(true), player->getClass(), player->getGender());
 
     FakePlayer fakePlayer;
     fakePlayer.FakeMorph    = FakeMorph;
